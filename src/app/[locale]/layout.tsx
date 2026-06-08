@@ -29,7 +29,7 @@ export default async function RootLayout({
   params: { locale: string };
 }>) {
   // Extract Locale securely asynchronously
-  const { locale } = await params;
+  const { locale } = params;
 
   // Mathematically validate the routing strings dynamically rejecting invalid paths
   if (!routing.locales.includes(locale as any)) {
