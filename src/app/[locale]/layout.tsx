@@ -26,10 +26,10 @@ export default async function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }>) {
   // Extract Locale securely asynchronously
-  const { locale } = params;
+  const { locale } = await params;
 
   // Mathematically validate the routing strings dynamically rejecting invalid paths
   if (!routing.locales.includes(locale as any)) {

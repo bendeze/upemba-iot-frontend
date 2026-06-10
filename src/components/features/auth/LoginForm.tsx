@@ -27,14 +27,17 @@ export function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginFormValues) => {
-      // Native Django default endpoint utilizing standard DRF Token Authentication natively
-      const response = await apiClient.post("/auth-token/", credentials);
+      // Native Simple JWT Token Authentication
+      const response = await apiClient.post("/token/", credentials);
       return response.data;
     },
     onSuccess: (data: any) => {
-      // Default DRF Token Payload dynamically isolated
-      if (data?.token) {
-        Cookies.set("auth_token", data.token, { path: "/", secure: process.env.NODE_ENV === "production" });
+      // JWT Payload contains access and refresh tokens
+      if (data?.access) {
+        Cookies.set("access_token", data.access, { path: "/", secure: process.env.NODE_ENV === "production" });
+      }
+      if (data?.refresh) {
+        Cookies.set("refresh_token", data.refresh, { path: "/", secure: process.env.NODE_ENV === "production" });
       }
       router.push("/dashboard");
     },
