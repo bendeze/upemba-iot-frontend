@@ -39,9 +39,11 @@ function ActivationFormInner() {
       return response.data;
     },
     onSuccess: (data: any) => {
-      if (data?.token) {
-        // Automatically login the user after successful activation
-        Cookies.set("auth_token", data.token, { path: "/", secure: process.env.NODE_ENV === "production" });
+      if (data?.access) {
+        Cookies.set("access_token", data.access, { path: "/", secure: process.env.NODE_ENV === "production" });
+      }
+      if (data?.refresh) {
+        Cookies.set("refresh_token", data.refresh, { path: "/", secure: process.env.NODE_ENV === "production" });
       }
       // Redirect to the dashboard native workspace
       router.push("/dashboard");
