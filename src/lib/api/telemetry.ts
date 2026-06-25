@@ -9,6 +9,9 @@ export interface HealthStatus {
   anomaly_score: number;
   status: 'NORMAL' | 'WARNING' | 'CRITICAL';
   prediction_timestamp: string;
+  cpu_load_percent?: number;
+  ram_allocation_mb?: number;
+  processing_latency_ms?: number;
 }
 
 export interface Equipment {

@@ -78,6 +78,7 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
               <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Node</th>
               <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Predicted Health</th>
               <th className="hidden md:table-cell px-6 py-4 font-bold tracking-wider">Risk Index</th>
+              <th className="hidden lg:table-cell px-6 py-4 font-bold tracking-wider">Edge Metrics</th>
               <th className="px-3 sm:px-6 py-4 font-bold tracking-wider text-right">Action</th>
             </tr>
           </thead>
@@ -119,6 +120,17 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
                     </td>
                     <td className="hidden md:table-cell px-6 py-4 font-mono text-muted-foreground text-xs">
                       {status.anomaly_score.toFixed(3)}
+                    </td>
+                    <td className="hidden lg:table-cell px-6 py-4 font-mono text-muted-foreground text-[10px]">
+                      {status.cpu_load_percent !== undefined ? (
+                        <div className="flex flex-col gap-0.5">
+                          <span>CPU: {status.cpu_load_percent}%</span>
+                          <span>RAM: {status.ram_allocation_mb}MB</span>
+                          <span>Latency: {status.processing_latency_ms}ms</span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground/50">N/A</span>
+                      )}
                     </td>
                     <td className="px-3 sm:px-6 py-4 text-right">
                       {linkedLog ? (
