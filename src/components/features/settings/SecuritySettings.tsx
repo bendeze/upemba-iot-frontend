@@ -1,10 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { apiClient } from '@/lib/axios';
 import { Lock, ShieldAlert, KeyRound } from 'lucide-react';
+import { extractApiErrorMessage } from '@/lib/apiErrors';
 
 export function SecuritySettings() {
+  const t = useTranslations('Settings');
+  const tAuth = useTranslations('Auth');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,8 +27,6 @@ export function SecuritySettings() {
     setErrorMessage('');
 
     try {
-      // Best-effort execution against standard dj-rest-auth endpoints
-      // Could be /auth/password/change/ or /password/change/ depending on urls.py registration
       await apiClient.post('/users/change-password/', {
         old_password: currentPassword,
         new_password1: newPassword,
@@ -37,19 +39,19 @@ export function SecuritySettings() {
     } catch (err: any) {
       console.error(err);
       setStatus('error');
-      setErrorMessage(err.response?.data?.detail || "An error occurred attempting to change your password. Please verify your current password.");
+      setErrorMessage(extractApiErrorMessage(err, "An error occurred attempting to change your password. Please verify your current password."));
     }
   };
 
   return (
     <div className="space-y-6 max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      <div className="flex items-start gap-4 p-4 rounded-xl border border-destructive/20 bg-destructive/5 text-destructive backdrop-blur-sm">
-        <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-4 p-4 rounded-xl border border-border/50 bg-card/50 text-foreground backdrop-blur-sm">
+        <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5 text-amber-500" />
         <div>
-          <h4 className="text-sm font-bold">Account Security</h4>
-          <p className="text-xs leading-relaxed opacity-90 mt-1">
-            Changing your password will immediately terminate all active sessions across other devices. Ensure you use a strong alphanumeric combination.
+          <h4 className="text-sm font-bold">{t('securityTitle')}</h4>
+          <p className="text-xs leading-relaxed text-muted-foreground mt-1">
+            {t('securityDesc')}
           </p>
         </div>
       </div>
@@ -58,7 +60,7 @@ export function SecuritySettings() {
         <div className="space-y-4">
           
           <div className="space-y-2">
-            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><Lock className="w-3.5 h-3.5"/> Current Password</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><Lock className="w-3.5 h-3.5"/> {tAuth('currentPasswordLabel')}</label>
             <input
               required
               type="password"
@@ -70,7 +72,7 @@ export function SecuritySettings() {
           </div>
           
           <div className="space-y-2 pt-2">
-            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5"/> New Password</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5"/> {tAuth('passwordLabel')}</label>
             <input
               required
               type="password"
@@ -82,7 +84,7 @@ export function SecuritySettings() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5"/> Confirm New Password</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5"><KeyRound className="w-3.5 h-3.5"/> {tAuth('confirmPasswordLabel')}</label>
             <input
               required
               type="password"
@@ -100,14 +102,14 @@ export function SecuritySettings() {
         )}
         
         {status === 'success' && (
-          <p className="text-sm font-medium text-green-500 animate-pulse">Password changed securely.</p>
+          <p className="text-sm font-medium text-emerald-500 animate-pulse">Password changed securely.</p>
         )}
 
         <div className="pt-4 border-t border-border/50 flex justify-end gap-3">
           <button
             type="submit"
             disabled={status === 'loading'}
-            className="inline-flex items-center justify-center rounded-md text-sm font-bold transition-all bg-destructive text-destructive-foreground hover:bg-destructive/90 h-11 px-8 shadow-md hover:shadow-lg disabled:opacity-50 disabled:pointer-events-none"
+            className="inline-flex items-center justify-center rounded-md text-sm font-bold transition-all bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 shadow-md hover:shadow-lg disabled:opacity-50 disabled:pointer-events-none"
           >
            {status === 'loading' ? 'Authenticating...' : 'Update Password'}
           </button>

@@ -1,6 +1,7 @@
 'use client';
 
-import { Filter, Calendar } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Filter } from 'lucide-react';
 
 interface LogFiltersProps {
   selectedEquipment: number | undefined;
@@ -19,12 +20,14 @@ export function LogFilters({
   endDate,
   setEndDate
 }: LogFiltersProps) {
+  const t = useTranslations('Logs');
+
   return (
-    <div className="flex flex-col sm:flex-row gap-4 p-4 border border-border/50 rounded-xl bg-muted/10 shadow-sm backdrop-blur-sm">
+    <div className="flex flex-col sm:flex-row gap-4 p-4 border border-border/50 rounded-xl bg-card/50 shadow-sm backdrop-blur-sm">
       {/* Date Range Selectors */}
       <div className="flex-1 space-y-1.5">
         <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
-          Start Date
+          {t('filterStart')}
         </label>
         <input
           type="date"
@@ -36,7 +39,7 @@ export function LogFilters({
 
       <div className="flex-1 space-y-1.5">
         <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
-          End Date
+          {t('filterEnd')}
         </label>
         <input
           type="date"
@@ -58,7 +61,7 @@ export function LogFilters({
             className="flex h-10 w-full sm:w-auto items-center justify-center gap-2 rounded-md border border-input bg-background hover:bg-muted px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
          >
            <Filter className="w-4 h-4" />
-           Clear
+           {t('resetFilters')}
          </button>
       </div>
 

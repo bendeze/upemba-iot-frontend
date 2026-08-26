@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { Activity, TerminalSquare, Cpu, Settings, LogOut, RadioTower } from "lucide-react";
+import { Activity, TerminalSquare, Cpu, Settings, LogOut, RadioTower, TrendingUp } from "lucide-react";
 import { 
   Sidebar, 
   SidebarContent, 
@@ -41,6 +41,7 @@ export function AppSidebar() {
 
   const navItems = [
     { title: t("telemetry"), url: "/dashboard", icon: Activity },
+    { title: t("predictions"), url: "/dashboard/predictions", icon: TrendingUp },
     { title: t("logs"), url: "/dashboard/logs", icon: TerminalSquare },
     { title: t("equipment"), url: "/dashboard/equipment", icon: Cpu },
   ];

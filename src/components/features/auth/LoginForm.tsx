@@ -12,6 +12,7 @@ import { apiClient } from "@/lib/axios";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
+import { applyApiErrorsToForm } from "@/lib/apiErrors";
 import Cookies from "js-cookie";
 
 export function LoginForm() {
@@ -23,7 +24,7 @@ export function LoginForm() {
     defaultValues: { username: "", password: "" },
   });
 
-  const { register, handleSubmit, formState: { errors } } = form;
+  const { register, handleSubmit, formState: { errors }, setError } = form;
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginFormValues) => {
@@ -42,7 +43,7 @@ export function LoginForm() {
       router.push("/dashboard");
     },
     onError: (error) => {
-      form.setError("root", { message: t("loginError") });
+      applyApiErrorsToForm(error, setError, t("loginError"));
     },
   });
 
@@ -51,53 +52,53 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="border-border/50 bg-card/60 backdrop-blur-xl shadow-2xl transition-all hover:shadow-primary/5">
-      <CardHeader className="space-y-2 text-center sm:text-left">
-        <CardTitle className="text-3xl font-bold tracking-tight">{t("loginTitle")}</CardTitle>
-        <CardDescription className="text-base font-medium">
+    <Card className="border-border/50 bg-card/80 backdrop-blur-md shadow-lg">
+      <CardHeader className="space-y-1.5 pb-4">
+        <CardTitle className="text-2xl font-bold tracking-tight text-foreground">{t("loginTitle")}</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">
           {t("loginDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="username" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="username" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("usernameLabel")}
             </Label>
             <Input 
               id="username"
-              className="h-12 bg-background/50 text-base" 
+              className="h-10 bg-background/50 text-sm" 
               placeholder="admin" 
               {...register("username")} 
             />
             {errors.username && (
-              <p className="text-sm font-medium text-destructive">{errors.username.message}</p>
+              <p className="text-xs font-medium text-destructive">{errors.username.message}</p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("passwordLabel")}
             </Label>
             <Input 
               id="password"
-              className="h-12 bg-background/50 text-base tracking-widest" 
+              className="h-10 bg-background/50 text-sm tracking-widest" 
               type="password" 
               placeholder="••••••••" 
               {...register("password")} 
             />
             {errors.password && (
-              <p className="text-sm font-medium text-destructive">{errors.password.message}</p>
+              <p className="text-xs font-medium text-destructive">{errors.password.message}</p>
             )}
           </div>
           
           {errors.root && (
-            <p className="text-sm font-medium animate-pulse text-destructive bg-destructive/10 p-3 rounded-md">
+            <p className="text-xs font-medium text-destructive bg-destructive/10 p-2.5 rounded-md">
               {errors.root.message}
             </p>
           )}
 
-          <Button type="submit" className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20" disabled={loginMutation.isPending}>
+          <Button type="submit" className="w-full h-10 text-sm font-semibold shadow-sm mt-2" disabled={loginMutation.isPending}>
              {loginMutation.isPending ? t("loginLoading") : t("loginSubmit")}
           </Button>
         </form>

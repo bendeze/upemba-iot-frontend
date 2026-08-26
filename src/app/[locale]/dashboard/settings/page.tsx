@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { User, Palette, ShieldCheck } from 'lucide-react';
 import { ProfileSettings } from '@/components/features/settings/ProfileSettings';
 import { AppearanceSettings } from '@/components/features/settings/AppearanceSettings';
@@ -9,28 +10,29 @@ import { SecuritySettings } from '@/components/features/settings/SecuritySetting
 type SettingsTab = 'profile' | 'appearance' | 'security';
 
 export default function SettingsDashboardPage() {
+  const t = useTranslations('Settings');
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
 
   const tabs = [
-    { id: 'profile', label: 'Profile Metrics', icon: <User className="w-4 h-4" /> },
-    { id: 'appearance', label: 'Appearance', icon: <Palette className="w-4 h-4" /> },
-    { id: 'security', label: 'Account Security', icon: <ShieldCheck className="w-4 h-4" /> },
+    { id: 'profile', label: t('tabProfile'), icon: <User className="w-4 h-4" /> },
+    { id: 'appearance', label: t('tabAppearance'), icon: <Palette className="w-4 h-4" /> },
+    { id: 'security', label: t('tabSecurity'), icon: <ShieldCheck className="w-4 h-4" /> },
   ];
 
   return (
     <div className="max-w-6xl w-full flex flex-col pt-2">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-          System Configuration
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          {t('pageTitle')}
         </h1>
-        <p className="text-muted-foreground mt-1.5 tracking-wide">
-          Manage your operational profile, environment aesthetics, and account security.
+        <p className="text-muted-foreground mt-1.5 tracking-wide text-sm">
+          {t('pageDesc')}
         </p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 lg:gap-12 items-start mt-4">
         
-        {/* SettingsSidebar (inline for tight coupling) */}
+        {/* SettingsSidebar */}
         <aside className="w-full md:w-64 shrink-0 overflow-x-auto no-scrollbar pb-2 md:pb-0">
           <nav className="flex md:flex-col gap-1.5 md:gap-2">
             {tabs.map((tab) => (

@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useHealthStatuses, useEquipments } from '@/hooks/useTelemetry';
 import { useLogs } from '@/hooks/useLogs';
 import { LogReportDialog } from './LogReportDialog';
 import { Pagination } from '@/components/shared/Pagination';
 import { format } from 'date-fns';
-import { FileText, Eye, Activity } from 'lucide-react';
+import { FileText, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MaintenanceLog } from '@/lib/api/logs';
 
@@ -17,6 +18,8 @@ interface LogsTableProps {
 }
 
 export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
+  const t = useTranslations('Logs');
+  const tCommon = useTranslations('Common');
   const [page, setPage] = useState(1);
 
   // Reset page to 1 whenever filters change to prevent "Empty Page" bugs
@@ -55,17 +58,40 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
     return eq ? eq.name : `Node #${id}`;
   };
 
+  const getStatusBadge = (status: string) => {
+    if (status === 'CRITICAL') {
+      return (
+        <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold tracking-wider uppercase border bg-red-500/10 text-red-500 border-red-500/20">
+          {tCommon('critical')}
+        </span>
+      );
+    }
+    if (status === 'WARNING') {
+      return (
+        <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold tracking-wider uppercase border bg-yellow-500/10 text-yellow-500 border-yellow-500/20">
+          {tCommon('warning')}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold tracking-wider uppercase border bg-green-500/10 text-green-500 border-green-500/20">
+        {tCommon('normal')}
+      </span>
+    );
+  };
+
   return (
-    <div className="flex flex-col border border-border/50 rounded-xl bg-background/50 overflow-hidden shadow-sm">
+    <div className="flex flex-col border border-border/50 rounded-xl bg-card/50 backdrop-blur-sm overflow-hidden shadow-sm">
       
       {/* Table Toolbar */}
       <div className="flex items-center justify-between p-4 border-b border-border/50 bg-muted/20">
         <div>
-           <h3 className="text-sm font-bold tracking-widest uppercase flex items-center gap-2">
-             <Activity className="w-4 h-4 text-primary" />
-             Predictive Maintenance Analysis
+           <h3 className="text-sm font-bold tracking-widest uppercase text-foreground">
+             {t('tableTitle')}
            </h3>
-           <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider font-medium">Showing {healthStatuses?.length || 0} ML-driven failure risk assessments.</p>
+           <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider font-medium">
+             {t('tableSubtitle', { count: healthStatuses?.length || 0 })}
+           </p>
         </div>
       </div>
 
@@ -74,25 +100,25 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="text-xs text-muted-foreground uppercase bg-muted/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Evaluation Time</th>
-              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Node</th>
-              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Predicted Health</th>
-              <th className="hidden md:table-cell px-6 py-4 font-bold tracking-wider">Risk Index</th>
-              <th className="hidden lg:table-cell px-6 py-4 font-bold tracking-wider">Edge Metrics</th>
-              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider text-right">Action</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">{t('colEvalTime')}</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">{t('colNode')}</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">{t('colHealth')}</th>
+              <th className="hidden md:table-cell px-6 py-4 font-bold tracking-wider">{t('colRiskIndex')}</th>
+              <th className="hidden lg:table-cell px-6 py-4 font-bold tracking-wider">{t('colEdgeMetrics')}</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider text-right">{t('colAction')}</th>
             </tr>
           </thead>
           <tbody>
             {isStatusesLoading ? (
               <tr>
-                 <td colSpan={5} className="px-6 py-12 text-center">
+                 <td colSpan={6} className="px-6 py-12 text-center">
                     <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-primary border-r-transparent"></div>
                  </td>
               </tr>
             ) : healthStatuses?.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
-                  No health evaluations found matching your filters.
+                <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
+                  {t('noLogs')}
                 </td>
               </tr>
             ) : (
@@ -109,14 +135,7 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
                       {getEquipmentName(status.equipment)}
                     </td>
                     <td className="px-3 sm:px-6 py-4">
-                      <span className={cn(
-                        "inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold tracking-wider uppercase border",
-                        status.status === 'CRITICAL' && "bg-red-500/10 text-red-500 border-red-500/20",
-                        status.status === 'WARNING' && "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-                        status.status === 'NORMAL' && "bg-green-500/10 text-green-500 border-green-500/20"
-                      )}>
-                        {status.status}
-                      </span>
+                      {getStatusBadge(status.status)}
                     </td>
                     <td className="hidden md:table-cell px-6 py-4 font-mono text-muted-foreground text-xs">
                       {status.anomaly_score.toFixed(3)}
@@ -139,15 +158,15 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-muted/50 text-foreground hover:bg-accent hover:text-accent-foreground rounded-md border border-border transition-colors"
                         >
                           <Eye className="w-3.5 h-3.5" />
-                          View Log
+                          {t('viewLog')}
                         </button>
                       ) : (
                         <button 
                           onClick={() => handleOpenCreateForRecord(status.equipment, status.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-primary hover:text-primary hover:bg-primary/10 rounded-md border border-primary/20 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-foreground bg-muted/30 hover:bg-muted rounded-md border border-border transition-colors"
                         >
                           <FileText className="w-3.5 h-3.5" />
-                          File Log
+                          {t('createLog')}
                         </button>
                       )}
                     </td>

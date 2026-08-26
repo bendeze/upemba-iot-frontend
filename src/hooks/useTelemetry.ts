@@ -11,8 +11,9 @@ import {
   Equipment,
 } from '@/lib/api/telemetry';
 import { PaginatedResponse } from '@/lib/api/types';
+export { useTelemetryWebSocket } from './useTelemetryWebSocket';
 
-export const POLLING_INTERVAL = 30 * 1000; // 30 seconds
+export const POLLING_INTERVAL = 60 * 1000; // 60s fallback polling when WebSocket is connected
 
 export function useEquipments(search?: string) {
   return useQuery<Equipment[]>({

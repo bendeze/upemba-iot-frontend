@@ -1,8 +1,21 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import Cookies from 'js-cookie';
 
+function getBaseUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.trim().length > 0) {
+    const cleaned = envUrl.split('#')[0].trim().replace(/\/+$/, '');
+    if (cleaned.length > 0) return cleaned;
+  }
+  // In the browser, use relative '/api' which is proxied by Next.js rewrites to Django on port 8000
+  if (typeof window !== 'undefined') {
+    return '/api';
+  }
+  return 'http://127.0.0.1:8000/api';
+}
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.76:8000/api',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,6 +25,9 @@ export const apiClient = axios.create({
 // Statically attaches the JWT access token to every active fetch sequence
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    if (!config.baseURL) {
+      config.baseURL = getBaseUrl();
+    }
     // Native JWT uses 'access_token' cookie securely
     const token = Cookies.get('access_token');
 
@@ -39,7 +55,7 @@ apiClient.interceptors.response.use(
       if (refreshToken) {
         try {
           // Attempt to refresh the access token
-          const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api'}/token/refresh/`, {
+          const response = await axios.post(`${getBaseUrl()}/token/refresh/`, {
             refresh: refreshToken
           });
           

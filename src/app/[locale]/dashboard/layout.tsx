@@ -10,10 +10,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border/40 bg-background/95 backdrop-blur px-4 md:px-6">
           <div className="flex items-center gap-4">
             <SidebarTrigger className="-ml-2 hover:bg-primary/10 transition-colors" />
-            <div className="hidden lg:flex items-center text-sm font-bold tracking-widest gap-2">
-              <span className="text-foreground uppercase">UPEMBA</span>
-              <span className="text-muted-foreground/40">//</span>
-              <span className="text-muted-foreground uppercase">Edge Node</span>
+            <div className="hidden lg:flex items-center text-sm font-bold tracking-wider text-foreground">
+              <span>UPEMBA IOT</span>
             </div>
           </div>
           

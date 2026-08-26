@@ -2,6 +2,20 @@ import { apiClient } from '../axios';
 import { z } from 'zod';
 import { PaginatedResponse } from './types';
 
+export interface ForecastPoint {
+  step: number;
+  timestamp: string;
+  temperature: number;
+  voltage: number;
+  vib_x: number;
+  vib_y: number;
+  vib_z: number;
+  anomaly_score?: number;
+  anomaly_probability?: number;
+  confidence?: number;
+  status?: 'NORMAL' | 'WARNING' | 'CRITICAL';
+}
+
 export interface HealthStatus {
   id: number;
   equipment: number;
@@ -9,6 +23,12 @@ export interface HealthStatus {
   anomaly_score: number;
   status: 'NORMAL' | 'WARNING' | 'CRITICAL';
   prediction_timestamp: string;
+  predicted_status?: 'NORMAL' | 'WARNING' | 'CRITICAL' | null;
+  predictive_anomaly_score?: number | null;
+  prediction_horizon_steps?: number;
+  prediction_horizon_minutes?: number | null;
+  forecasted_values?: ForecastPoint[] | null;
+  prediction_generated_at?: string | null;
   cpu_load_percent?: number;
   ram_allocation_mb?: number;
   processing_latency_ms?: number;

@@ -1,13 +1,15 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useHealthStatuses } from '@/hooks/useTelemetry';
+import { useHealthStatuses, useTelemetryWebSocket } from '@/hooks/useTelemetry';
 import { cn } from '@/lib/utils';
 import { AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
 import { HealthStatus } from '@/lib/api/telemetry';
 
 export function GlobalHealthLeds() {
   const { data: statuses, isLoading, isError } = useHealthStatuses();
+  // Maintain global WebSocket stream for instant ML health updates & alerts
+  useTelemetryWebSocket({ isGlobal: true, enabled: true });
 
   if (isLoading || isError) {
     return <div className="flex h-5 items-center justify-center animate-pulse space-x-2">
@@ -37,7 +39,7 @@ export function GlobalHealthLeds() {
 
   return (
     <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 rounded-full border border-border/40 bg-background/50 shadow-sm backdrop-blur-sm">
-      <div className="hidden md:block text-[10px] font-bold tracking-widest text-muted-foreground mr-2">PREDICTIVE_ML</div>
+      <div className="hidden md:block text-[10px] font-bold tracking-widest text-muted-foreground mr-1">STATUS</div>
       
       {/* GREEN LED */}
       <div className={cn(

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useCreateLog, useUpdateLog } from '@/hooks/useLogs';
 import { useEquipments } from '@/hooks/useTelemetry';
 import { MaintenanceLog } from '@/lib/api/logs';
@@ -15,7 +16,8 @@ interface LogReportDialogProps {
 }
 
 export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipmentId, targetStatusId }: LogReportDialogProps) {
-  const isEditing = !!initialData; // We map 'initialData' to mean Read Only Viewing since we can't edit ML historical logs.
+  const t = useTranslations('Logs.reportDialog');
+  const tCommon = useTranslations('Common');
   const isReadOnly = !!initialData;
   const createMutation = useCreateLog();
   const updateMutation = useUpdateLog();
@@ -60,12 +62,18 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
         
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border/50 bg-muted/20 shrink-0">
           <div className="flex items-center gap-3">
-             <div className="p-2 bg-primary/10 rounded-lg">
-                <FileText className="w-5 h-5 text-primary" />
+             <div className="p-2 bg-muted rounded-lg text-foreground border border-border/40">
+                <FileText className="w-5 h-5 text-foreground" />
              </div>
              <div>
-               <h2 className="text-xl font-bold tracking-tight">{isReadOnly ? 'View Maintenance Report' : 'File New Report'}</h2>
-               {isReadOnly && initialData && <p className="text-xs text-muted-foreground mt-0.5">Author: {initialData.author_name || 'System'} | Filed: {new Date(initialData.timestamp).toLocaleString()}</p>}
+               <h2 className="text-xl font-bold tracking-tight text-foreground">
+                 {isReadOnly ? t('viewTitle') : t('createTitle')}
+               </h2>
+               <p className="text-xs text-muted-foreground mt-0.5">
+                 {isReadOnly && initialData 
+                   ? `Author: ${initialData.author_name || 'System'} | Filed: ${new Date(initialData.timestamp).toLocaleString()}`
+                   : t('desc')}
+               </p>
              </div>
           </div>
           <button onClick={onClose} className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors">
@@ -76,7 +84,9 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
         <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Target Equipment</label>
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                {tCommon('selectEquipment')}
+              </label>
               <select
                 required
                 disabled={isReadOnly}
@@ -84,7 +94,7 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
                 value={formData.equipment || ""}
                 onChange={(e) => setFormData({ ...formData, equipment: Number(e.target.value) })}
               >
-                <option value="" disabled>Select hardware node...</option>
+                <option value="" disabled>{tCommon('selectEquipment')}...</option>
                 {equipments?.map((eq) => (
                   <option key={eq.id} value={eq.id}>
                     {eq.name} ({eq.mac_address})
@@ -93,12 +103,14 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
             </select>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Action Taken Summary</label>
+              <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                {t('descriptionLabel')}
+              </label>
               <input
                 required
                 disabled={isReadOnly}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:opacity-75 disabled:cursor-not-allowed placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                placeholder="e.g. Replaced voltage capacitor"
+                placeholder="e.g. Replaced capacitor / inspection nominal"
                 value={formData.action_taken}
                 onChange={(e) => setFormData({ ...formData, action_taken: e.target.value })}
               />
@@ -106,12 +118,14 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
           </div>
 
           <div className="space-y-2 flex-1 flex flex-col">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Detailed Description / Notes</label>
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              {t('descriptionLabel')}
+            </label>
             <textarea
               required
               disabled={isReadOnly}
               className="flex-1 min-h-[250px] w-full rounded-md border border-input bg-background disabled:opacity-75 disabled:cursor-not-allowed px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 leading-relaxed resize-none"
-              placeholder="Provide an extensive chronological breakdown of the maintenance operation..."
+              placeholder="Provide notes or breakdown of the maintenance operation..."
               value={formData.description?.replace(/\[SYSTEM TAG DO NOT REMOVE: #sys_ref:\d+\]/g, '')}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
@@ -123,14 +137,14 @@ export function LogReportDialog({ initialData, isOpen, onClose, defaultEquipment
               onClick={onClose}
               className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-5 py-2"
             >
-              Cancel
+              {tCommon('cancel')}
             </button>
             <button
               type="submit"
               disabled={isPending}
               className="inline-flex items-center justify-center rounded-md text-sm font-bold transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2 shadow-sm disabled:opacity-50"
             >
-              {isPending ? 'Processing...' : isReadOnly ? 'Close Document' : 'File Report'}
+              {isPending ? t('savingBtn') : isReadOnly ? t('closeBtn') : t('submitBtn')}
             </button>
           </div>
         </form>

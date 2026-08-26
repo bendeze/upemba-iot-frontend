@@ -13,6 +13,7 @@ import { useRouter } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import { Suspense } from 'react';
+import { extractApiErrorMessage } from "@/lib/apiErrors";
 
 const activationSchema = z.object({
   code: z.string().min(4, "Activation code must be at least 4 characters").max(20, "Code is too long"),
@@ -49,7 +50,7 @@ function ActivationFormInner() {
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      const msg = error.response?.data?.detail || "Invalid or expired activation code.";
+      const msg = extractApiErrorMessage(error, "Invalid or expired activation code.");
       form.setError("root", { message: msg });
     },
   });
@@ -63,7 +64,7 @@ function ActivationFormInner() {
       form.clearErrors("root");
     },
     onError: (error: any) => {
-      const msg = error.response?.data?.detail || "Failed to resend activation code.";
+      const msg = extractApiErrorMessage(error, "Failed to resend activation code.");
       form.setError("root", { message: msg });
     },
   });
