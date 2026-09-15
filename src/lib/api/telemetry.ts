@@ -18,7 +18,7 @@ export interface ForecastPoint {
 
 export interface HealthStatus {
   id: number;
-  equipment: number;
+  equipment: string;
   equipment_name: string;
   anomaly_score: number;
   status: 'NORMAL' | 'WARNING' | 'CRITICAL';
@@ -35,7 +35,7 @@ export interface HealthStatus {
 }
 
 export interface Equipment {
-  id: number;
+  id: string;
   name: string;
   equipment_type: string;
   mac_address: string;
@@ -45,7 +45,7 @@ export interface Equipment {
 
 export interface SensorReading {
   id: number;
-  equipment: number;
+  equipment: string;
   temperature: number;
   voltage: number;
   vib_x: number;
@@ -75,18 +75,18 @@ export const createEquipment = async (data: Partial<Equipment>): Promise<Equipme
   return response.data;
 };
 
-export const updateEquipment = async (id: number, data: Partial<Equipment>): Promise<Equipment> => {
+export const updateEquipment = async (id: string, data: Partial<Equipment>): Promise<Equipment> => {
   const response = await apiClient.patch<Equipment>(`/equipment/${id}/`, data);
   return response.data;
 };
 
-export const deleteEquipment = async (id: number): Promise<void> => {
+export const deleteEquipment = async (id: string): Promise<void> => {
   await apiClient.delete(`/equipment/${id}/`);
 };
 
 // Fetch all health statuses (with optional filters)
 export const getHealthStatuses = async (
-  equipmentId?: number,
+  equipmentId?: string,
   startDate?: string,
   endDate?: string,
   page: number = 1
@@ -113,7 +113,7 @@ export const getHealthStatuses = async (
 
 // Fetch sensor readings for a specific equipment
 export const getSensorReadings = async (
-  equipmentId: number,
+  equipmentId: string,
   page: number = 1
 ): Promise<PaginatedResponse<SensorReading>> => {
   const response = await apiClient.get<PaginatedResponse<SensorReading>>('/sensor-readings/', {

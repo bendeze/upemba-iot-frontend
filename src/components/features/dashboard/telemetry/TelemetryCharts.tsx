@@ -17,7 +17,7 @@ import { format } from 'date-fns';
 import { Vibration3DVisualizer } from './Vibration3DVisualizer';
 
 interface TelemetryChartsProps {
-  equipmentId: number | undefined;
+  equipmentId: string | undefined;
 }
 
 export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {

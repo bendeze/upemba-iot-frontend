@@ -39,13 +39,13 @@ export function EquipmentTable() {
     setFormOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to permanently delete this hardware node? This action destroys all associated historical telemetry data!")) {
       deleteMutation.mutate(id);
     }
   };
 
-  const renderHealthBadge = (equipmentId: number) => {
+  const renderHealthBadge = (equipmentId: string) => {
     const status = healthStatuses?.results?.find(h => h.equipment === equipmentId)?.status;
     
     if (status === 'NORMAL') {

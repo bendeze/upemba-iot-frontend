@@ -12,7 +12,7 @@ import { TrendingUp } from 'lucide-react';
 
 export function PredictionDashboard() {
   const t = useTranslations('Predictions');
-  const [selectedEquipment, setSelectedEquipment] = useState<number | undefined>();
+  const [selectedEquipment, setSelectedEquipment] = useState<string | undefined>();
 
   const { data: healthData, isLoading: isLoadingHealth } = useHealthStatuses(selectedEquipment);
   const { data: readingsData, isLoading: isLoadingReadings } = useSensorReadings(selectedEquipment);

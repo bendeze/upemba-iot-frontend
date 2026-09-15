@@ -7,7 +7,7 @@ import { AlertTriangle, CheckCircle, ShieldAlert, TrendingUp, ArrowRight } from 
 import { Link } from '@/i18n/routing';
 
 interface StatusBadgeProps {
-  equipmentId: number | undefined;
+  equipmentId: string | undefined;
 }
 
 export function StatusBadge({ equipmentId }: StatusBadgeProps) {

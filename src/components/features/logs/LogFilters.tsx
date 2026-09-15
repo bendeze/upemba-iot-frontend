@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { Filter } from 'lucide-react';
 
 interface LogFiltersProps {
-  selectedEquipment: number | undefined;
-  setSelectedEquipment: (id: number | undefined) => void;
+  selectedEquipment: string | undefined;
+  setSelectedEquipment: (id: string | undefined) => void;
   startDate: string;
   setStartDate: (date: string) => void;
   endDate: string;

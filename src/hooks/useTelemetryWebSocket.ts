@@ -26,7 +26,7 @@ function getWebSocketBaseUrl(): string {
 }
 
 interface UseTelemetryWebSocketOptions {
-  equipmentId?: number;
+  equipmentId?: string;
   isGlobal?: boolean;
   enabled?: boolean;
 }

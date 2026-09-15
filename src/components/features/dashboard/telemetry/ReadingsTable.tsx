@@ -9,7 +9,7 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface ReadingsTableProps {
-  equipmentId: number | undefined;
+  equipmentId: string | undefined;
   limit?: number;
 }
 

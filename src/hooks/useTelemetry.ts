@@ -23,7 +23,7 @@ export function useEquipments(search?: string) {
   });
 }
 
-export function useHealthStatuses(equipmentId?: number, startDate?: string, endDate?: string, page: number = 1) {
+export function useHealthStatuses(equipmentId?: string, startDate?: string, endDate?: string, page: number = 1) {
   return useQuery<PaginatedResponse<HealthStatus>>({
     queryKey: ['health-statuses', equipmentId, startDate, endDate, page],
     queryFn: () => getHealthStatuses(equipmentId, startDate, endDate, page),
@@ -31,10 +31,10 @@ export function useHealthStatuses(equipmentId?: number, startDate?: string, endD
   });
 }
 
-export function useSensorReadings(equipmentId: number | undefined, page: number = 1) {
+export function useSensorReadings(equipmentId: string | undefined, page: number = 1) {
   return useQuery<PaginatedResponse<SensorReading>>({
     queryKey: ['sensor-readings', equipmentId, page],
-    queryFn: () => getSensorReadings(equipmentId as number, page),
+    queryFn: () => getSensorReadings(equipmentId as string, page),
     enabled: !!equipmentId,
     refetchInterval: POLLING_INTERVAL,
   });
@@ -51,7 +51,7 @@ export function useCreateEquipment() {
 export function useUpdateEquipment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Equipment> }) => updateEquipment(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<Equipment> }) => updateEquipment(id, data),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['equipments'] }),
   });
 }
@@ -63,3 +63,4 @@ export function useDeleteEquipment() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['equipments'] }),
   });
 }
+

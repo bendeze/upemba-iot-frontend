@@ -8,7 +8,7 @@ import { LogsTable } from '@/components/features/logs/LogsTable';
 
 export default function MaintenanceLogsPage() {
   const t = useTranslations('Logs');
-  const [selectedEquipment, setSelectedEquipment] = useState<number | undefined>(undefined);
+  const [selectedEquipment, setSelectedEquipment] = useState<string | undefined>(undefined);
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
 

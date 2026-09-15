@@ -11,7 +11,7 @@ import { Radio } from 'lucide-react';
 
 export function TelemetryDashboard() {
   const t = useTranslations('Telemetry');
-  const [selectedEquipment, setSelectedEquipment] = useState<number | undefined>();
+  const [selectedEquipment, setSelectedEquipment] = useState<string | undefined>();
 
   // Subscribe to real-time equipment telemetry stream
   const { isConnected } = useTelemetryWebSocket({

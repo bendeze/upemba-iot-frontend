@@ -3,7 +3,7 @@ import { PaginatedResponse } from './types';
 
 export interface MaintenanceLog {
   id: number;
-  equipment: number;
+  equipment: string;
   author: number | null;
   author_name: string;
   description: string;
@@ -12,7 +12,7 @@ export interface MaintenanceLog {
 }
 
 export const getLogs = async (
-  equipmentId?: number, 
+  equipmentId?: string, 
   startDate?: string, 
   endDate?: string,
   page: number = 1
@@ -45,3 +45,4 @@ export const updateLog = async (id: number, data: Partial<MaintenanceLog>): Prom
 export const deleteLog = async (id: number): Promise<void> => {
   await apiClient.delete(`/maintenance-logs/${id}/`);
 };
+

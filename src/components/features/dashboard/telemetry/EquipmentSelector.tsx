@@ -5,8 +5,8 @@ import { useEquipments } from '@/hooks/useTelemetry';
 import { useEffect } from 'react';
 
 interface EquipmentSelectorProps {
-  value: number | undefined;
-  onChange: (value: number) => void;
+  value: string | undefined;
+  onChange: (value: string) => void;
 }
 
 export function EquipmentSelector({ value, onChange }: EquipmentSelectorProps) {
@@ -37,17 +37,18 @@ export function EquipmentSelector({ value, onChange }: EquipmentSelectorProps) {
         {t('targetNode')}
       </label>
       <select
-        value={value?.toString() || ""}
-        onChange={(e) => onChange(parseInt(e.target.value, 10))}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
         className="h-10 px-3 py-2 w-full rounded-md border border-border/50 bg-background/50 text-foreground transition-colors focus:ring-2 focus:ring-primary outline-none cursor-pointer text-xs"
       >
         <option value="" disabled>{t('selectEquipment')}</option>
         {equipments?.map((eq) => (
-           <option key={eq.id} value={eq.id.toString()}>
-             {eq.name || `Equipment #${eq.id}`}
+           <option key={eq.id} value={eq.id}>
+             {eq.name || `Equipment (${eq.mac_address})`}
            </option>
         ))}
       </select>
     </div>
   );
 }
+

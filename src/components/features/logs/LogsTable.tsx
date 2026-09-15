@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { MaintenanceLog } from '@/lib/api/logs';
 
 interface LogsTableProps {
-  equipmentId?: number;
+  equipmentId?: string;
   startDate?: string;
   endDate?: string;
 }
@@ -35,11 +35,11 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
   const maintenanceLogs = maintenanceLogsResponse?.results;
 
   const [formOpen, setFormOpen] = useState(false);
-  const [selectedEqId, setSelectedEqId] = useState<number | undefined>(undefined);
+  const [selectedEqId, setSelectedEqId] = useState<string | undefined>(undefined);
   const [selectedStatusId, setSelectedStatusId] = useState<number | undefined>(undefined);
   const [viewingLog, setViewingLog] = useState<MaintenanceLog | undefined>(undefined);
 
-  const handleOpenCreateForRecord = (eqId: number, statusId: number) => {
+  const handleOpenCreateForRecord = (eqId: string, statusId: number) => {
     setSelectedEqId(eqId);
     setSelectedStatusId(statusId);
     setViewingLog(undefined);
@@ -53,7 +53,7 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
     setFormOpen(true);
   };
 
-  const getEquipmentName = (id: number) => {
+  const getEquipmentName = (id: string) => {
     const eq = equipments?.find(e => e.id === id);
     return eq ? eq.name : `Node #${id}`;
   };

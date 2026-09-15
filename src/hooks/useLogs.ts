@@ -10,7 +10,7 @@ import { PaginatedResponse } from '@/lib/api/types';
 
 export const POLLING_INTERVAL = 40 * 1000; // 40 seconds sync
 
-export function useLogs(equipmentId?: number, startDate?: string, endDate?: string, page: number = 1) {
+export function useLogs(equipmentId?: string, startDate?: string, endDate?: string, page: number = 1) {
   return useQuery<PaginatedResponse<MaintenanceLog>>({
     queryKey: ['logs', equipmentId, startDate, endDate, page],
     queryFn: () => getLogs(equipmentId, startDate, endDate, page),

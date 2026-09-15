@@ -24,7 +24,7 @@ export function GlobalHealthLeds() {
     if (!statuses?.results) return [];
     
     // Using a Map prevents the O(N^2) performance freeze that happens with '.some()' inside a loop
-    const equipmentMap = new Map<number, HealthStatus>();
+    const equipmentMap = new Map<string, HealthStatus>();
     for (const status of statuses.results) {
       if (!equipmentMap.has(status.equipment)) {
         equipmentMap.set(status.equipment, status);
