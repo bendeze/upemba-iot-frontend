@@ -162,6 +162,8 @@
   "Logs": {
     "pageTitle": "Maintenance Hub & History",
     "pageDesc": "Keep track of equipment health checks, alerts, and past repairs.",
+    "tabHealth": "Health Evaluations & Notes",
+    "tabTelemetry": "Raw Sensor Readings",
     "filterNode": "All Equipment",
     "filterStart": "From Date",
     "filterEnd": "To Date",

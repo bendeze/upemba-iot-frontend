@@ -111,18 +111,27 @@ export const getHealthStatuses = async (
   return response.data;
 };
 
-// Fetch sensor readings for a specific equipment
+// Fetch sensor readings (with optional filters)
 export const getSensorReadings = async (
-  equipmentId: string,
+  equipmentId?: string,
+  startDate?: string,
+  endDate?: string,
   page: number = 1
 ): Promise<PaginatedResponse<SensorReading>> => {
-  const response = await apiClient.get<PaginatedResponse<SensorReading>>('/sensor-readings/', {
-    params: {
-      equipment: equipmentId,
-      ordering: '-timestamp', // Expect newest first
-      page,
-    },
-  });
-  
+  const params: any = {
+    ordering: '-timestamp', // Expect newest first
+    page,
+  };
+  if (equipmentId) params.equipment = equipmentId;
+  if (startDate) params.start_date = startDate;
+  if (endDate) {
+    if (endDate.length === 10) {
+      params.end_date = `${endDate}T23:59:59.999Z`;
+    } else {
+      params.end_date = endDate;
+    }
+  }
+
+  const response = await apiClient.get<PaginatedResponse<SensorReading>>('/sensor-readings/', { params });
   return response.data;
 };

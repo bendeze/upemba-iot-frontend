@@ -162,6 +162,8 @@
   "Logs": {
     "pageTitle": "Centre & Historique de Maintenance",
     "pageDesc": "Consultez les bilans de santé des équipements, les alertes et l'historique des réparations.",
+    "tabHealth": "Bilans de Santé & Notes",
+    "tabTelemetry": "Données Brutes des Capteurs",
     "filterNode": "Tous les Équipements",
     "filterStart": "Date de Début",
     "filterEnd": "Date de Fin",

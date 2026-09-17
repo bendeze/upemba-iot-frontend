@@ -6,7 +6,7 @@ import { useSensorReadings } from '@/hooks/useTelemetry';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 
 interface ReadingsTableProps {
   equipmentId: string | undefined;
@@ -48,7 +48,13 @@ export function ReadingsTable({ equipmentId, limit = 6 }: ReadingsTableProps) {
               {t('totalIngested', { count: data.count })}
             </span>
             <Link 
-              href="/dashboard/logs"
+              href={{
+                pathname: '/dashboard/logs',
+                query: {
+                  tab: 'telemetry',
+                  ...(equipmentId ? { equipment: equipmentId } : {}),
+                }
+              }}
               className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/80 transition-colors bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-md border border-primary/20"
             >
               <span>{t('fullLogsBtn')}</span>

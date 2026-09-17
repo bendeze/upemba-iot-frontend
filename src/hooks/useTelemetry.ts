@@ -31,11 +31,15 @@ export function useHealthStatuses(equipmentId?: string, startDate?: string, endD
   });
 }
 
-export function useSensorReadings(equipmentId: string | undefined, page: number = 1) {
+export function useSensorReadings(
+  equipmentId?: string,
+  startDate?: string,
+  endDate?: string,
+  page: number = 1
+) {
   return useQuery<PaginatedResponse<SensorReading>>({
-    queryKey: ['sensor-readings', equipmentId, page],
-    queryFn: () => getSensorReadings(equipmentId as string, page),
-    enabled: !!equipmentId,
+    queryKey: ['sensor-readings', equipmentId, startDate, endDate, page],
+    queryFn: () => getSensorReadings(equipmentId, startDate, endDate, page),
     refetchInterval: POLLING_INTERVAL,
   });
 }
