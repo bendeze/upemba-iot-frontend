@@ -20,6 +20,50 @@ interface TelemetryChartsProps {
   equipmentId: string | undefined;
 }
 
+interface CustomTelemetryTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number | string;
+    color?: string;
+    stroke?: string;
+    fill?: string;
+  }>;
+  label?: string;
+  unit?: string;
+}
+
+function CustomTelemetryTooltip({ active, payload, label, unit }: CustomTelemetryTooltipProps) {
+  if (!active || !payload || !payload.length) return null;
+
+  return (
+    <div className="p-3 bg-popover/95 text-popover-foreground border border-border/80 rounded-xl shadow-xl backdrop-blur-md text-xs font-sans min-w-[150px] animate-in fade-in-0 zoom-in-95 duration-150">
+      <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-border/60">
+        <span className="font-mono text-muted-foreground text-[11px] font-semibold">{label}</span>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        {payload.map((item, idx) => {
+          if (item.value === null || item.value === undefined) return null;
+          const displayColor = item.stroke || item.color || item.fill;
+          return (
+            <div key={idx} className="flex items-center justify-between gap-3">
+              <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
+                {displayColor && (
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: displayColor }} />
+                )}
+                <span>{item.name}:</span>
+              </span>
+              <span className="font-mono font-bold text-foreground">
+                {typeof item.value === 'number' ? item.value.toFixed(2) : item.value} {unit || ''}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
   const t = useTranslations('Telemetry.charts');
   const { data: readingsData, isLoading } = useSensorReadings(equipmentId);
@@ -99,11 +143,11 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
                       <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                   <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} tickFormatter={(v) => `${v}°C`} width={45} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="temperature" name="Temperature (°C)" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorTemp)" />
+                  <Tooltip content={<CustomTelemetryTooltip unit="°C" />} />
+                  <Area type="monotone" dataKey="temperature" name="Temperature" stroke="#f59e0b" strokeWidth={2.5} fill="url(#colorTemp)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -142,11 +186,11 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                   <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} tickFormatter={(v) => `${v}V`} width={45} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="voltage" name="Voltage (V)" stroke="#3b82f6" strokeWidth={2.5} fill="url(#colorVolt)" />
+                  <Tooltip content={<CustomTelemetryTooltip unit="V" />} />
+                  <Area type="monotone" dataKey="voltage" name="Voltage" stroke="#3b82f6" strokeWidth={2.5} fill="url(#colorVolt)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -185,11 +229,11 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
                       <stop offset="95%" stopColor="#eab308" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                   <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="vib_x" name="Vib X (g)" stroke="#eab308" strokeWidth={2.5} fill="url(#colorVibX)" />
+                  <Tooltip content={<CustomTelemetryTooltip unit="g" />} />
+                  <Area type="monotone" dataKey="vib_x" name="Vib X" stroke="#eab308" strokeWidth={2.5} fill="url(#colorVibX)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -228,11 +272,11 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
                       <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                   <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="vib_y" name="Vib Y (g)" stroke="#14b8a6" strokeWidth={2.5} fill="url(#colorVibY)" />
+                  <Tooltip content={<CustomTelemetryTooltip unit="g" />} />
+                  <Area type="monotone" dataKey="vib_y" name="Vib Y" stroke="#14b8a6" strokeWidth={2.5} fill="url(#colorVibY)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -271,11 +315,11 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
                       <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                   <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                   <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
-                  <Tooltip contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', fontSize: '12px' }} />
-                  <Area type="monotone" dataKey="vib_z" name="Vib Z (g)" stroke="#3b82f6" strokeWidth={2.5} fill="url(#colorVibZ)" />
+                  <Tooltip content={<CustomTelemetryTooltip unit="g" />} />
+                  <Area type="monotone" dataKey="vib_z" name="Vib Z" stroke="#3b82f6" strokeWidth={2.5} fill="url(#colorVibZ)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

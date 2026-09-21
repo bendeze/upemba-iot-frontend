@@ -36,30 +36,30 @@ function CustomForecastTooltip({ active, payload, label, unit, t }: any) {
   const status = dataPoint?.status;
 
   return (
-    <div className="p-3 bg-zinc-950/95 border border-zinc-800 rounded-xl shadow-xl backdrop-blur-md text-xs font-sans min-w-[200px]">
-      <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-zinc-800">
-        <span className="font-mono text-zinc-400">{label}</span>
+    <div className="p-3 bg-popover/95 text-popover-foreground border border-border/80 rounded-xl shadow-xl backdrop-blur-md text-xs font-sans min-w-[200px] animate-in fade-in-0 zoom-in-95 duration-150">
+      <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-border/60">
+        <span className="font-mono text-muted-foreground font-semibold">{label}</span>
         {isForecast ? (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase">
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 uppercase">
             {t('projected')} {dataPoint?.step ? `+${dataPoint.step}` : ''}
           </span>
         ) : (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-zinc-800 text-zinc-400">
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-muted text-muted-foreground border border-border/50">
             {t('actualBaseline')}
           </span>
         )}
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1.5">
         {payload.map((item: any, idx: number) => {
           if (item.value === null || item.value === undefined) return null;
           return (
             <div key={idx} className="flex items-center justify-between gap-3">
-              <span className="text-zinc-400 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                {item.name}:
+              <span className="text-muted-foreground flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                <span>{item.name}:</span>
               </span>
-              <span className="font-mono font-bold text-zinc-100">
+              <span className="font-mono font-bold text-foreground">
                 {typeof item.value === 'number' ? item.value.toFixed(2) : item.value} {unit || ''}
               </span>
             </div>
@@ -67,32 +67,32 @@ function CustomForecastTooltip({ active, payload, label, unit, t }: any) {
         })}
 
         {isForecast && prob !== undefined && (
-          <div className="mt-2 pt-2 border-t border-zinc-800/80 flex flex-col gap-1">
+          <div className="mt-2 pt-2 border-t border-border/60 flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-zinc-400">{t('probTitle')}:</span>
+              <span className="text-muted-foreground">{t('probTitle')}:</span>
               <span className={`font-mono font-bold ${
-                prob >= 80 ? 'text-red-400' :
-                prob >= 50 ? 'text-amber-400' :
-                'text-emerald-400'
+                prob >= 80 ? 'text-red-500 dark:text-red-400' :
+                prob >= 50 ? 'text-amber-500 dark:text-amber-400' :
+                'text-emerald-500 dark:text-emerald-400'
               }`}>
                 {prob.toFixed(1)}%
               </span>
             </div>
             {conf !== undefined && (
               <div className="flex items-center justify-between">
-                <span className="text-zinc-400">Confidence:</span>
-                <span className="font-mono text-zinc-300">
+                <span className="text-muted-foreground">Confidence:</span>
+                <span className="font-mono font-semibold text-foreground">
                   {conf.toFixed(1)}%
                 </span>
               </div>
             )}
             {status && (
               <div className="flex items-center justify-between mt-0.5">
-                <span className="text-zinc-400">Regime:</span>
-                <span className={`text-[10px] font-bold uppercase ${
-                  status === 'CRITICAL' ? 'text-red-400' :
-                  status === 'WARNING' ? 'text-amber-400' :
-                  'text-emerald-400'
+                <span className="text-muted-foreground">Regime:</span>
+                <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                  status === 'CRITICAL' ? 'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20' :
+                  status === 'WARNING' ? 'bg-amber-500/10 text-amber-500 dark:text-amber-400 border border-amber-500/20' :
+                  'bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20'
                 }`}>
                   {status}
                 </span>
@@ -214,7 +214,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
           <div className="w-full h-[230px] min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} tickFormatter={(v) => `${v}°C`} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="°C" t={t} />} />
@@ -256,7 +256,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
           <div className="w-full h-[230px] min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} tickFormatter={(v) => `${v}V`} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="V" t={t} />} />
@@ -308,7 +308,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={[0, 100]} tickFormatter={(v) => `${v}%`} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="%" t={t} />} />
@@ -350,7 +350,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
           <div className="w-full h-[230px] min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="g" t={t} />} />
@@ -392,7 +392,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
           <div className="w-full h-[230px] min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="g" t={t} />} />
@@ -434,7 +434,7 @@ export function ForecastTrajectoryCharts({ readings, forecastPoints }: ForecastT
           <div className="w-full h-[230px] min-w-0">
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(128,128,128,0.15)" vertical={false} />
                 <XAxis dataKey="formattedTime" stroke="#71717a" fontSize={10} tickLine={false} />
                 <YAxis stroke="#71717a" fontSize={10} domain={['auto', 'auto']} width={45} tickLine={false} />
                 <Tooltip content={<CustomForecastTooltip unit="g" t={t} />} />
